@@ -49,12 +49,12 @@ module system_top  #(
 
 
   // FMC HPC IOs
-  input  [1:0]  agc0,
-  input  [1:0]  agc1,
-  input  [1:0]  agc2,
-  input  [1:0]  agc3,
-  input         clkin6_n,
-  input         clkin6_p,
+  //input  [1:0]  agc0,
+  //input  [1:0]  agc1,
+  //input  [1:0]  agc2,
+  //input  [1:0]  agc3,
+  //input         clkin6_n,
+  //input         clkin6_p,
   input         clkin10_n,
   input         clkin10_p,
   input         fpga_refclk_in_n,
@@ -67,6 +67,7 @@ module system_top  #(
   input  [TX_NUM_LINKS-1:0]  fpga_syncin_p,
   output [RX_NUM_LINKS-1:0]  fpga_syncout_n,
   output [RX_NUM_LINKS-1:0]  fpga_syncout_p,
+  // inout  [9:4][1:0] gpio,
   inout  [10:0] gpio,
   inout         hmc_gpio1,
   output        hmc_sync,
@@ -129,10 +130,10 @@ module system_top  #(
     .IB (sysref2_n),
     .O (sysref));
 
-  IBUFDS i_ibufds_tx_device_clk (
-    .I (clkin6_p),
-    .IB (clkin6_n),
-    .O (clkin6));
+  // IBUFDS i_ibufds_tx_device_clk (
+    // .I (clkin6_p),
+    // .IB (clkin6_n),
+    // .O (clkin6));
 
   IBUFDS i_ibufds_rx_device_clk (
     .I (clkin10_p),
@@ -156,17 +157,20 @@ module system_top  #(
   end
   endgenerate
 
-  BUFG i_tx_device_clk (
-    .I (clkin6),
-    .O (tx_device_clk)
-  );
+  // BUFG i_tx_device_clk (
+    // .I (clkin6),
+    // .O (tx_device_clk)
+  // );
 
   BUFG i_rx_device_clk (
     .I (clkin10),
     .O (rx_device_clk_internal)
   );
 
-  assign rx_device_clk = SHARED_DEVCLK ? tx_device_clk : rx_device_clk_internal;
+  // assign rx_device_clk = SHARED_DEVCLK ? tx_device_clk : rx_device_clk_internal;
+  // APH- clkin6 not available when using HTG FMC extender so use the rx_device_clk
+  assign rx_device_clk = rx_device_clk_internal;
+  assign tx_device_clk = rx_device_clk_internal;
 
   // spi
 
@@ -191,14 +195,14 @@ module system_top  #(
     .dio_p ({hmc_gpio1,       // 43
              gpio[10:0]}));   // 42-32
 
-  assign gpio_i[44] = agc0[0];
-  assign gpio_i[45] = agc0[1];
-  assign gpio_i[46] = agc1[0];
-  assign gpio_i[47] = agc1[1];
-  assign gpio_i[48] = agc2[0];
-  assign gpio_i[49] = agc2[1];
-  assign gpio_i[50] = agc3[0];
-  assign gpio_i[51] = agc3[1];
+  // assign gpio_i[44] = agc0[0];
+  // assign gpio_i[45] = agc0[1];
+  // assign gpio_i[46] = agc1[0];
+  // assign gpio_i[47] = agc1[1];
+  // assign gpio_i[48] = agc2[0];
+  // assign gpio_i[49] = agc2[1];
+  // assign gpio_i[50] = agc3[0];
+  // assign gpio_i[51] = agc3[1];
   assign gpio_i[52] = irqb[0];
   assign gpio_i[53] = irqb[1];
 
